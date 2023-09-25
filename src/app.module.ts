@@ -10,6 +10,10 @@ import { CrmModule } from './crm/crm.module';
 import { LoyaltiesModule } from './loyalties/loyalties.module';
 import { ReferralsModule } from './referrals/referrals.module';
 import { VouchersModule } from './vouchers/vouchers.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
 
 @Module({
   imports: [
@@ -22,6 +26,7 @@ import { VouchersModule } from './vouchers/vouchers.module';
     LoyaltiesModule,
     ReferralsModule,
     VouchersModule,
+    MongooseModule.forRoot(process.env.MONGO_URI),
   ],
   controllers: [AppController],
   providers: [AppService],
