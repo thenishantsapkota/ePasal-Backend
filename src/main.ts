@@ -1,15 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as dotenv from 'dotenv';
 import { join } from 'path';
 import { AppModule } from './app.module';
 
-dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
-
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const configService = app.get(ConfigService);
   const config = new DocumentBuilder()
     .addBearerAuth()
     .setTitle('GoPhysio App Backend')
@@ -21,6 +20,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.enableCors();
   app.useStaticAssets(join(__dirname, '../', 'public'));
-  await app.listen(process.env.APP_PORT);
+  await app.listen(configService.get('APP_PORT'));
 }
 bootstrap();
