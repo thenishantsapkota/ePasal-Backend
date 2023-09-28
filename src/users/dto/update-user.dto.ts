@@ -1,25 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional } from 'class-validator';
-import { AddressDto } from './address.dto';
+import { IsOptional } from 'class-validator';
 
 export class UpdateUserDto {
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
   first_name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
   last_name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
   phone: string;
-
-  @IsOptional()
-  @ApiProperty({ type: [AddressDto] })
-  billingAddresses: AddressDto[];
-
-  @IsOptional()
-  @ApiProperty({ type: [AddressDto] })
-  shippingAddresses: AddressDto[];
 }

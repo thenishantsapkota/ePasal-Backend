@@ -17,7 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ApiTags } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/email/email.service';
-import { CreateUserDto, LoginUserDto } from './dto';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { OtpDto } from './dto/otp.dto';
 import { RoleEnum } from './enums';
 import { AuthGuard } from './guard';
@@ -171,6 +171,29 @@ export class UsersController {
         status: 'success',
         data: user,
         message: 'Profile fetched successfully!',
+      };
+    } catch (error: any) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Put('/update-profile')
+  @UseGuards(AuthGuard, VerifiedGuard)
+  async updateProfile(
+    @Req() request: ProtectedRequest,
+    @Body() userDto: UpdateUserDto,
+  ) {
+    try {
+      const updatedUser = await this.usersService.updateUser(
+        request.user.email,
+        userDto,
+      );
+
+      return {
+        status: 'success',
+        data: updatedUser,
+        message: 'Profile updated successfully!',
       };
     } catch (error: any) {
       throw new BadRequestException(error.message);

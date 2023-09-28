@@ -13,6 +13,7 @@ import { ProductsModule } from './products/products.module';
 import { ReferralsModule } from './referrals/referrals.module';
 import { UsersModule } from './users/users.module';
 import { VouchersModule } from './vouchers/vouchers.module';
+import { AddressesModule } from './addresses/addresses.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { VouchersModule } from './vouchers/vouchers.module';
     VouchersModule,
     DatabaseModule,
     EmailModule,
+    AddressesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { Otp, Users } from './entities';
 import { RoleEnum } from './enums';
 
@@ -28,6 +28,7 @@ export class UsersService {
       where: {
         email,
       },
+      relations: ['shippingAddresses', 'billingAddresses'],
     });
   }
 
@@ -88,5 +89,15 @@ export class UsersService {
       const updatedUser = await this.userRepository.save(user);
       return updatedUser;
     }
+  }
+
+  async updateUser(email: string, userDto: UpdateUserDto) {
+    const user = await this.findOneUser(email);
+
+    Object.assign(user, userDto);
+
+    const updatedUser = await this.userRepository.save(user);
+
+    return updatedUser;
   }
 }
