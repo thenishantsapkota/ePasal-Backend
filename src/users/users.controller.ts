@@ -11,11 +11,17 @@ import {
   Put,
   Req,
   UnauthorizedException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 import { EmailService } from 'src/email/email.service';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { OtpDto } from './dto/otp.dto';
@@ -32,6 +38,7 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
+    private readonly config: ConfigService,
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -50,7 +57,7 @@ export class UsersController {
         throw new UnauthorizedException('Incorrect email or password!');
       }
 
-      const payload = { id: user.id, username: user.email };
+      const payload = { id: user.id, email: user.email, user: user };
       const accessToken = await this.jwtService.signAsync(payload);
 
       return {
@@ -78,7 +85,7 @@ export class UsersController {
       userDto.password = await this.usersService.hashPassword(userDto.password);
       const user = await this.usersService.createUser(userDto, RoleEnum.user);
 
-      const payload = { id: user.id, username: user.email };
+      const payload = { id: user.id, email: user.email, user: user };
       const accessToken = await this.jwtService.signAsync(payload);
       if (process.env.NODE_ENV === 'production') {
         const otp = await this.emailService.sendOtp(user.email);
@@ -102,6 +109,7 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @Post('/verify')
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   async verifyOtp(@Req() request: ProtectedRequest, @Body() otpDto: OtpDto) {
     try {
       const user = await this.usersService.findOneUser(request.user.email);
@@ -140,6 +148,7 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @Put('/resend-otp')
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   async resendOtp(@Req() request: ProtectedRequest) {
     try {
       if (request.user.verified) {
@@ -161,6 +170,7 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @Get('/me')
   @UseGuards(AuthGuard, VerifiedGuard)
+  @ApiBearerAuth()
   async getMe(@Req() request: ProtectedRequest) {
     try {
       const user = await this.usersService.findOneUser(request.user.email);
@@ -177,9 +187,52 @@ export class UsersController {
     }
   }
 
+  @HttpCode(HttpStatus.CREATED)
+  @Post('/profile-picture')
+  @UseGuards(AuthGuard, VerifiedGuard)
+  @ApiBearerAuth()
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: path.join(
+          __dirname,
+          '..',
+          '..',
+          'public',
+          'profile-pictures',
+        ),
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const extension = path.extname(file.originalname);
+          cb(null, uniqueSuffix + extension);
+        },
+      }),
+    }),
+  )
+  async uploadProfilePicture(
+    @Req() request: ProtectedRequest,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('File not found');
+    }
+    const filename = `/profile-pictures/${file.filename}`;
+    const user = await this.usersService.updateProfilePicture(
+      request.user.email,
+      filename,
+    );
+    return {
+      status: 'success',
+      data: user,
+      message: 'Profile picture uploaded successfully!',
+    };
+  }
+
   @HttpCode(HttpStatus.OK)
   @Put('/update-profile')
   @UseGuards(AuthGuard, VerifiedGuard)
+  @ApiBearerAuth()
   async updateProfile(
     @Req() request: ProtectedRequest,
     @Body() userDto: UpdateUserDto,

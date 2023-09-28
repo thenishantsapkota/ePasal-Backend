@@ -14,6 +14,7 @@ import { ReferralsModule } from './referrals/referrals.module';
 import { UsersModule } from './users/users.module';
 import { VouchersModule } from './vouchers/vouchers.module';
 import { AddressesModule } from './addresses/addresses.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AddressesModule } from './addresses/addresses.module';
     DatabaseModule,
     EmailModule,
     AddressesModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

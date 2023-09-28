@@ -100,4 +100,13 @@ export class UsersService {
 
     return updatedUser;
   }
+
+  async updateProfilePicture(email: string, filename: string) {
+    const user = await this.findOneUser(email);
+    if (user) {
+      user.profile_picture = filename;
+      const updatedUser = await this.userRepository.save(user);
+      return updatedUser;
+    }
+  }
 }
