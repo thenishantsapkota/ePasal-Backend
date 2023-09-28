@@ -1,22 +1,26 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { AddressesModule } from './addresses/addresses.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { ProductsModule } from './products/products.module';
-import { CartModule } from './cart/cart.module';
-import { OrdersModule } from './orders/orders.module';
 import { BlogsModule } from './blogs/blogs.module';
+import { CartModule } from './cart/cart.module';
 import { CrmModule } from './crm/crm.module';
+import { DatabaseModule } from './database/database.module';
+import { EmailModule } from './email/email.module';
 import { LoyaltiesModule } from './loyalties/loyalties.module';
+import { OrdersModule } from './orders/orders.module';
+import { ProductsModule } from './products/products.module';
 import { ReferralsModule } from './referrals/referrals.module';
+import { UsersModule } from './users/users.module';
 import { VouchersModule } from './vouchers/vouchers.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import * as dotenv from 'dotenv';
-
-dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `./.env.${process.env.NODE_ENV}`,
+    }),
     UsersModule,
     ProductsModule,
     CartModule,
@@ -26,7 +30,9 @@ dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
     LoyaltiesModule,
     ReferralsModule,
     VouchersModule,
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    DatabaseModule,
+    EmailModule,
+    AddressesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
