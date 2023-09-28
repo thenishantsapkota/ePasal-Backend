@@ -142,6 +142,9 @@ export class UsersController {
   @UseGuards(AuthGuard)
   async resendOtp(@Req() request: ProtectedRequest) {
     try {
+      if (request.user.verified) {
+        throw new BadRequestException('User is already verified!');
+      }
       await this.usersService.deleteOtp(request.user);
       const otp = await this.emailService.sendOtp(request.user.email);
       await this.usersService.createOtp(request.user.email, otp);
