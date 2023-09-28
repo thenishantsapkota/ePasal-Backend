@@ -6,6 +6,7 @@ import { BlogsModule } from './blogs/blogs.module';
 import { CartModule } from './cart/cart.module';
 import { CrmModule } from './crm/crm.module';
 import { DatabaseModule } from './database/database.module';
+import { EmailModule } from './email/email.module';
 import { LoyaltiesModule } from './loyalties/loyalties.module';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
@@ -29,6 +30,7 @@ import { VouchersModule } from './vouchers/vouchers.module';
     ReferralsModule,
     VouchersModule,
     DatabaseModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Address } from './address.entity';
+import { Otp } from './otp.entity';
 
 @Entity()
 export class Users {
@@ -35,4 +42,7 @@ export class Users {
 
   @OneToMany(() => Address, (address) => address.shippingUser)
   shippingAddresses: Address[];
+
+  @OneToOne(() => Otp, (otp) => otp.user, { nullable: true })
+  otp?: Otp;
 }
