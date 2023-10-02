@@ -14,7 +14,6 @@ import { UsersService } from './users.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        global: true,
         secret: configService.get('SECRET_KEY'),
         signOptions: { expiresIn: configService.get('EXPIRES_IN') },
       }),
