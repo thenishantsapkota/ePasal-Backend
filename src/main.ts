@@ -11,8 +11,8 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('GoPhysio App Backend')
-    .setDescription('NestJS API for GoPhysio Application')
+    .setTitle('ePasal Backend')
+    .setDescription('NestJS API for ePasal Backend')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

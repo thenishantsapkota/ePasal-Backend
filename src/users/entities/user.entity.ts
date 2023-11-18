@@ -22,6 +22,9 @@ export class Users {
   @Column({ default: false })
   verified: boolean;
 
+  @Column({ default: false })
+  is_admin: boolean;
+
   @Column({ default: 'user', enum: ['user', 'seller', 'admin'] })
   role: string;
 
