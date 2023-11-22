@@ -15,11 +15,10 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { EmailService } from 'src/email/email.service';
@@ -38,7 +37,6 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
-    private readonly config: ConfigService,
   ) {}
 
   @HttpCode(HttpStatus.OK)

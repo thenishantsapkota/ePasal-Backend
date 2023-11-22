@@ -1,8 +1,6 @@
 import { MailerModule } from '@nestjs-modules/mailer';
-import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { join } from 'path';
 import { EmailService } from './email.service';
 
 @Global()
@@ -20,13 +18,6 @@ import { EmailService } from './email.service';
         },
         defaults: {
           from: `"ePasal" <${config.get('SMTP_EMAIL')}>`,
-        },
-        template: {
-          dir: join(__dirname, 'templates'),
-          adapter: new EjsAdapter(),
-          options: {
-            strict: false,
-          },
         },
       }),
       inject: [ConfigService],
