@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/mapped-types';
 import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
@@ -29,3 +30,5 @@ export class ProductDto {
   @Type(() => CategoryDto)
   category: CategoryDto;
 }
+
+export class UpdateProductDto extends PartialType(ProductDto) {}
