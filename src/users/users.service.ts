@@ -14,10 +14,8 @@ export class UsersService {
   ) {}
 
   async createUser(userDto: CreateUserDto, role: RoleEnum) {
-    const user = new Users();
-    Object.assign(user, { ...userDto, role: role });
+    const user = this.userRepository.create({ ...userDto, role: role });
     await this.userRepository.save(user);
-
     delete user.password;
 
     return user;
@@ -33,14 +31,11 @@ export class UsersService {
   }
 
   async getUserPassword(email: string) {
-    return await this.userRepository.findOne({
-      where: {
-        email,
-      },
-      select: {
-        password: true,
-      },
-    });
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email })
+      .addSelect('user.password')
+      .getOne();
   }
 
   async hashPassword(password: string) {

@@ -55,8 +55,10 @@ export class UsersController {
         throw new UnauthorizedException('Incorrect email or password!');
       }
 
-      const payload = { id: user.id, email: user.email, user: user };
-      const accessToken = await this.jwtService.signAsync(payload);
+      delete user.password;
+
+      const payload = { id: user.id, email: user.email };
+      const accessToken = this.jwtService.sign(payload);
 
       return {
         status: 'success',
@@ -83,8 +85,8 @@ export class UsersController {
       userDto.password = await this.usersService.hashPassword(userDto.password);
       const user = await this.usersService.createUser(userDto, RoleEnum.user);
 
-      const payload = { id: user.id, email: user.email, user: user };
-      const accessToken = await this.jwtService.signAsync(payload);
+      const payload = { id: user.id, email: user.email };
+      const accessToken = this.jwtService.sign(payload);
       if (process.env.NODE_ENV === 'production') {
         const otp = await this.emailService.sendOtp(user.email);
         await this.usersService.createOtp(user.email, otp);
