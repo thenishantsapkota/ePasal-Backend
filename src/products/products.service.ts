@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as fs from 'fs';
+import * as path from 'path';
 import { Repository } from 'typeorm';
 import { CategoryDto, UpdateCategoryDto } from './dto/category.dto';
 import { ProductDto, UpdateProductDto } from './dto/product.dto';
@@ -15,25 +17,23 @@ export class ProductsService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async getAllProducts(): Promise<Product[]> {
-    return await this.productRepository.find({ relations: ['category'] });
-  }
-
   async getAllCategories(): Promise<Category[]> {
-    return await this.categoryRepository.find({ relations: ['product'] });
+    return await this.categoryRepository.find({ relations: ['products'] });
   }
 
-  async getProductById(id: number): Promise<Product> {
-    return await this.productRepository.findOne({
+  async getProductById(id: number) {
+    const product = await this.productRepository.findOne({
       where: {
         id,
       },
       relations: ['category'],
     });
+
+    return { ...product, url: product.getPath() };
   }
 
-  async getProductByCategory(categoryId: number): Promise<Product> {
-    return await this.productRepository.findOne({
+  async getProductsByCategory(categoryId: number): Promise<Product[]> {
+    return await this.productRepository.find({
       where: {
         category: {
           id: categoryId,
@@ -43,8 +43,28 @@ export class ProductsService {
     });
   }
 
-  async createProduct(productDto: ProductDto): Promise<Product> {
-    const product = this.productRepository.create(productDto);
+  async searchProducts(query: string = '') {
+    const queryBuilder = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category');
+
+    if (query) {
+      queryBuilder.where('product.name ILIKE :query', { query: `%${query}%` });
+    }
+
+    return await queryBuilder.getMany();
+  }
+
+  async createProduct(
+    productDto: ProductDto,
+    filename: string,
+  ): Promise<Product> {
+    const { category_id } = productDto;
+    const product = this.productRepository.create({
+      ...productDto,
+      category: { id: category_id },
+      image: filename,
+    });
     return await this.productRepository.save(product);
   }
 
@@ -76,6 +96,13 @@ export class ProductsService {
 
     if (!product) {
       return false;
+    }
+
+    try {
+      const publicFolder = path.resolve(__dirname, '..', '..', 'public');
+      fs.unlinkSync(path.join(publicFolder, product.getPath()));
+    } catch (error: any) {
+      console.error('Error deleting file');
     }
 
     return await this.productRepository.remove(product);

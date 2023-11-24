@@ -1,5 +1,5 @@
-import { Users } from 'src/users/entities';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Users } from '../../users/entities';
 
 @Entity()
 export class Address {

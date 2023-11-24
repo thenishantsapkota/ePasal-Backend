@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { Users } from '../entities';
 
 @Injectable()
-export class VerifiedGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
