@@ -14,8 +14,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AuthGuard, VerifiedGuard } from 'src/users/guard';
-import { ProtectedRequest } from 'src/users/types/AuthRequest';
+import { AuthGuard, VerifiedGuard } from '../users/guard';
+import { ProtectedRequest } from '../users/types/AuthRequest';
+import { successResponse } from '../util';
 import { AddressesService } from './addresses.service';
 import { AddressDto, UpdateAddressDto } from './dto';
 import { Address } from './entities';
@@ -38,11 +39,10 @@ export class AddressesController {
         throw new NotFoundException('Shipping Addresses not found!');
       }
 
-      return {
-        status: 'success',
-        data: shippingAddresses,
-        message: 'Shipping addresses fetched successfully!',
-      };
+      return successResponse(
+        shippingAddresses,
+        'Shipping addresses fetched successfully!',
+      );
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -61,11 +61,10 @@ export class AddressesController {
         throw new NotFoundException('Billing addresses not found!');
       }
 
-      return {
-        status: 'success',
-        data: billingAddresses,
-        message: 'Billing addresses fetched successfully!',
-      };
+      return successResponse(
+        billingAddresses,
+        'Billing addresses fetched successfully!',
+      );
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -90,11 +89,10 @@ export class AddressesController {
         shippingAddresses.push(shippingAddress);
       }
 
-      return {
-        status: 'success',
-        data: shippingAddresses,
-        message: 'Shipping addresses created successfully!',
-      };
+      return successResponse(
+        shippingAddresses,
+        'Shipping addresses created successfully!',
+      );
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -118,11 +116,10 @@ export class AddressesController {
         billingAddresses.push(billingAddress);
       }
 
-      return {
-        status: 'success',
-        data: billingAddresses,
-        message: 'Billing addresses created successfully!',
-      };
+      return successResponse(
+        billingAddresses,
+        'Billing addresses created successfully!',
+      );
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -150,11 +147,10 @@ export class AddressesController {
         );
       }
 
-      return {
-        status: 'success',
-        data: updatedAddress,
-        message: 'Shipping address updated successfully!',
-      };
+      return successResponse(
+        updatedAddress,
+        'Shipping address updated successfully!',
+      );
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -182,11 +178,10 @@ export class AddressesController {
         );
       }
 
-      return {
-        status: 'success',
-        data: updatedAddress,
-        message: 'Billing address updated successfully!',
-      };
+      return successResponse(
+        updatedAddress,
+        'Billing address updated successfully!',
+      );
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -212,11 +207,10 @@ export class AddressesController {
         );
       }
 
-      return {
-        status: 'success',
-        data: shippingAddress,
-        message: 'Shipping address deleted successfully!',
-      };
+      return successResponse(
+        shippingAddress,
+        'Shipping address deleted successfully!',
+      );
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -242,11 +236,10 @@ export class AddressesController {
         );
       }
 
-      return {
-        status: 'success',
-        data: billingAddress,
-        message: 'Billing address deleted successfully!',
-      };
+      return successResponse(
+        billingAddress,
+        'Billing address deleted successfully!',
+      );
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }

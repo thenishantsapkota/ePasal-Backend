@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -31,9 +32,18 @@ export class Product {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @Column()
+  @Column({ nullable: true })
   image: string;
 
   @ManyToOne(() => Category, (category) => category.products)
+  @JoinColumn({ name: 'category_id' })
   category: Category;
+
+  getPath(): string {
+    if (this.image) {
+      const filePath = `/products/${this.image}`;
+      return filePath;
+    }
+    return null;
+  }
 }

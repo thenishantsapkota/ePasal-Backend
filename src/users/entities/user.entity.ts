@@ -1,4 +1,3 @@
-import { Address } from 'src/addresses/entities';
 import {
   Column,
   Entity,
@@ -6,6 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Address } from '../../addresses/entities';
 import { Otp } from './otp.entity';
 
 @Entity()

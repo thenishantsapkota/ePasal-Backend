@@ -21,7 +21,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import * as bcrypt from 'bcryptjs';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import { EmailService } from 'src/email/email.service';
+import { EmailService } from '../email/email.service';
+import { successResponse } from '../util';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { OtpDto } from './dto/otp.dto';
 import { RoleEnum } from './enums';
@@ -60,11 +61,7 @@ export class UsersController {
       const payload = { id: user.id, email: user.email };
       const accessToken = this.jwtService.sign(payload);
 
-      return {
-        status: 'success',
-        data: accessToken,
-        message: 'Logged in successfully!',
-      };
+      return successResponse(accessToken, 'Logged in successfully!');
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -96,11 +93,7 @@ export class UsersController {
           throw new BadRequestException();
         }
       }
-      return {
-        status: 'success',
-        data: accessToken,
-        message: 'User registered successfully!',
-      };
+      return successResponse(accessToken, 'User registered successfully!');
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -135,11 +128,7 @@ export class UsersController {
 
       const updatedUser = await this.usersService.verifyEmail(user.email);
       await this.usersService.deleteOtp(updatedUser);
-      return {
-        status: 'success',
-        data: updatedUser,
-        message: 'Email verified successfully!',
-      };
+      return successResponse(updatedUser, 'Email verified successfully!');
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -177,11 +166,8 @@ export class UsersController {
       if (!user) {
         throw new NotFoundException('User not found!');
       }
-      return {
-        status: 'success',
-        data: user,
-        message: 'Profile fetched successfully!',
-      };
+
+      return successResponse(user, 'Profile fetched successfully!');
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -222,11 +208,8 @@ export class UsersController {
       request.user.email,
       filename,
     );
-    return {
-      status: 'success',
-      data: user,
-      message: 'Profile picture uploaded successfully!',
-    };
+
+    return successResponse(user, 'Profile picture uploaded successfully!');
   }
 
   @HttpCode(HttpStatus.OK)
@@ -243,11 +226,7 @@ export class UsersController {
         userDto,
       );
 
-      return {
-        status: 'success',
-        data: updatedUser,
-        message: 'Profile updated successfully!',
-      };
+      return successResponse(updatedUser, 'Profile updated successfully!');
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
