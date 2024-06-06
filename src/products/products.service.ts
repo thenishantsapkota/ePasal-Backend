@@ -17,8 +17,18 @@ export class ProductsService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async getAllCategories(): Promise<Category[]> {
-    return await this.categoryRepository.find({ relations: ['products'] });
+  async getAllCategories() {
+    const categories = await this.categoryRepository.find({
+      relations: ['products'],
+    });
+
+    return categories.map((category) => ({
+      ...category,
+      products: category.products.map((product) => ({
+        ...product,
+        url: product.getPath(),
+      })),
+    }));
   }
 
   async getProductById(id: number) {
@@ -32,8 +42,8 @@ export class ProductsService {
     return { ...product, url: product.getPath() };
   }
 
-  async getProductsByCategory(categoryId: number): Promise<Product[]> {
-    return await this.productRepository.find({
+  async getProductsByCategory(categoryId: number) {
+    const products = await this.productRepository.find({
       where: {
         category: {
           id: categoryId,
@@ -41,6 +51,8 @@ export class ProductsService {
       },
       relations: ['category'],
     });
+
+    return products.map((product) => ({ ...product, url: product.getPath() }));
   }
 
   async searchProducts(query: string = '') {

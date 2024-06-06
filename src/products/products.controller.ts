@@ -38,7 +38,6 @@ export class ProductsController {
   @HttpCode(HttpStatus.OK)
   @Get('')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard, VerifiedGuard)
   @ApiOperation({
     summary: 'Search for all the products with or without query',
   })
@@ -59,7 +58,6 @@ export class ProductsController {
   @HttpCode(HttpStatus.OK)
   @Get('/categories')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard, VerifiedGuard)
   @ApiOperation({ summary: 'Get all product categories' })
   async getAllCategories() {
     const categories = await this.productsService.getAllCategories();
@@ -73,7 +71,6 @@ export class ProductsController {
   @HttpCode(HttpStatus.OK)
   @Get('/product/:id')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard, VerifiedGuard)
   @ApiOperation({ summary: "Get a single product by it's ID" })
   async getOneProduct(@Param('id') id: number) {
     const product = await this.productsService.getProductById(id);
@@ -88,7 +85,6 @@ export class ProductsController {
   @HttpCode(HttpStatus.OK)
   @Get('/products/:categoryId')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard, VerifiedGuard)
   @ApiOperation({ summary: 'Get all products of a category' })
   async getProductsByCategory(@Param('categoryId') categoryId: number) {
     const products =
