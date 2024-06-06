@@ -1,17 +1,24 @@
-version: '3'
 services:
   postgres:
     container_name: postgres
-    image: postgres:latest
-    ports:
-      - '5432:5432'
-    volumes:
-      - /var/folders/postgres:/data/postgres
+    image: postgres:15.3-alpine3.17
     env_file:
-      - .env.development
-    networks:
+      - .env.production
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env.production
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./public:/usr/src/app/public
+    depends_on:
       - postgres
 
-networks:
-  postgres:
-    driver: bridge
+volumes:
+  pgdata:
