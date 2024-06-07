@@ -17,11 +17,14 @@ export class EmailService {
       subject: 'Verify your account.',
       from: this.config.get('SMTP_EMAIL'),
       html: `
-      <p>Please verify your email address.</p>
-      <p style="color:tomato;font-size:25px;letter-spacing:2px;">
-      <b>${generatedOtp}</b>
-      </p>
-      <p>This code <b>expires in 10 minutes</b>.</p>
+       <div style="font-family: Arial, sans-serif; padding: 20px; color: #444;">
+      <h2 style="color: #2F2F2F;">Email Verification</h2>
+      <p>To verify your email address, please use the following One Time Password (OTP):</p>
+      <div style="font-size: 24px; color: #4CAF50; font-weight: bold; margin: 20px 0;">${generatedOtp}</div>
+      <p>Please note, this OTP will expire in 10 minutes.</p>
+      <p>Thank you,</p>
+      <p>Your Team</p>
+    </div>
       `,
     });
 
@@ -36,11 +39,14 @@ export class EmailService {
       subject: 'Reset your password.',
       from: this.config.get('SMTP_EMAIL'),
       html: `
-      <p>Please use this code to reset your password.</p>
-      <p style="color:tomato;font-size:25px;letter-spacing:2px;">
-      <b>${generatedOtp}</b>
-      </p>
-      <p>This code <b>expires in 10 minutes</b>.</p>
+       <div style="font-family: Arial, sans-serif; padding: 20px; color: #444;">
+      <h2 style="color: #2F2F2F;">Email Verification</h2>
+      <p>To reset your password, please use the following One Time Password (OTP):</p>
+      <div style="font-size: 24px; color: #4CAF50; font-weight: bold; margin: 20px 0;">${generatedOtp}</div>
+      <p>Please note, this OTP will expire in 10 minutes.</p>
+      <p>Thank you,</p>
+      <p>Your Team</p>
+    </div>
       `,
     });
 

@@ -61,7 +61,7 @@ export class UsersController {
       const payload = { id: user.id, email: user.email };
       const accessToken = this.jwtService.sign(payload);
 
-      return successResponse(accessToken, 'Logged in successfully!');
+      return successResponse({ accessToken, user }, 'Logged in successfully!');
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
@@ -93,7 +93,10 @@ export class UsersController {
           throw new BadRequestException();
         }
       }
-      return successResponse(accessToken, 'User registered successfully!');
+      return successResponse(
+        { accessToken, user },
+        'User registered successfully!',
+      );
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
